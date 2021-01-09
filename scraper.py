@@ -10,6 +10,7 @@ class xkcd:
     def __init__(self):
         self.url = "https://c.xkcd.com/random/comic/"  # link fetches a random comic strip from xkcd page
         self.directory = "/home/" + getpass.getuser() + "/comic-images/xkcd" # getpass.getuser() helps in returning the current terminal username
+        self.filepath = None
 
     def is_valid_url(self):
         """ Checks whether the `url` is valid or not"""
@@ -36,18 +37,18 @@ class xkcd:
             handler.write(response.content)
         return self.directory + '/' + filename + '.png'
     
+    def delete_xkcd_image(self, saved_image_path):
+        os.system("rm " + saved_image_path)
+
     def show_xkcd_image(self):
         img_url = self.get_xkcd_image()
         saved_image_path = self.download_xkcd_image(img_url)
         os.system("feh " + saved_image_path)
-    
-    def delete_xkcd_image(self):
-        os.system("rm " + saved_image_path)
+        self.delete_xkcd_image(saved_image_path)
     
     
 if __name__ == "__main__":
     xkcd_comic = xkcd()
     xkcd_comic.show_xkcd_image()
-    xkcd_comic.delete_xkcd_image()
 
     
