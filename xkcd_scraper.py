@@ -12,6 +12,11 @@ class xkcd:
         self.directory = "/home/" + getpass.getuser() + "/comic-images/xkcd" # getpass.getuser() helps in returning the current terminal username
         self.filepath = None
 
+    def is_valid_url(self):
+        """ Checks whether the `url` is valid or not"""
+        parsed = urlparse(url)
+        return bool(parsed.netloc) and bool(parsed.scheme)
+
     def get_xkcd_image(self):
         """grabs the image from the webpage"""
         soup = bs(requests.get(self.url).content, "lxml")
