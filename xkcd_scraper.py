@@ -33,13 +33,15 @@ class xkcd:
         return self.directory + '/' + filename + '.png'
     
     def delete_xkcd_image(self, saved_image_path):
+        """ Delete the downloaded image"""
         os.system("rm " + saved_image_path)
 
     def show_xkcd_image(self):
+        """ Show the xkcd comic image"""
         img_url = self.get_xkcd_image()
         saved_image_path = self.download_xkcd_image(img_url)
         os.system("feh " + saved_image_path)
-        self.delete_xkcd_image(saved_image_path)
+        self.delete_xkcd_image(saved_image_path) # delete the dowloaded image
     
     
 if __name__ == "__main__":
