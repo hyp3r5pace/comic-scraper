@@ -29,14 +29,34 @@ class reddit:
         return posts
     
     def get_pics_url(self, posts):
-        pics = []
+        pics, tags = [], []
         for url in posts:
             resultPage = bs(requests.get(url, headers={'user-agent':self.REQUEST_AGENT}).content, "lxml")
-            img_link = resultPage.find_all('img', {'class':'preview'})
-            pics.append(img_link)
+            tag_link = resultPage.find_all('a', {'class':['thumbnail', 'may-blank'], 'data-event-action':'thumbnail'})
+            tags.append(tag_link)
+        for item in tags:
+            # item is a list of various tags
+            # first tag gives us the link to images
+            pics.append(item[0].attrs.get("href"))
         return pics
-
+    
+    def download_pics(self, pics_link):
+        """Download pics using the list of links"""
+        if not os.path.exists(self.directory):
+            os.makedirs(self.directory)
+        for url in pics_link:
+            try:
+                response = requests.get(url, stream=True)
+            except requests.exceptions.RequestException as e:
+                continue
+            filename = url[18:]
+            print(filename)
+            with open(self.directory + '/' + filename, "wb") as handler:
+                handler.write(response.content)
+    
 if __name__=="__main__":
     reddit_comics = reddit()
     posts = reddit_comics.get_posts_url()
-    print(reddit_comics.get_pics_url(posts)) 
+    pics_url = reddit_comics.get_pics_url(posts)
+    print(pics_url)
+    reddit_comics.download_pics(pics_url)
